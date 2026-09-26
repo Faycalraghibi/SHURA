@@ -89,14 +89,14 @@ Rules carried from the vision:
 | # | Work | Status |
 | --- | --- | --- |
 | 1 | Save the vision; this plan | done |
-| 2 | Gateway: NVIDIA client (OpenAI-compatible), JSON extraction, schema validation, 1 repair retry, rate-limit backoff | |
-| 3 | Forge on NVIDIA + server cache of built trees; `/system/awaken` | |
-| 4 | `/system/assess`, `/system/quest`, `/system/evaluate`, `/system/hint` with validation | |
-| 5 | App engines: learner model, planner, rank, XP/level, stats (unit tests) | |
-| 6 | App state store on the phone | |
-| 7 | System UI kit: window, notification, bars | |
-| 8 | Screens: Awakening, Assessment, Status, Quest, Result, Skill tree | |
-| 9 | Daily quest + penalty quest + retests | |
+| 2 | Gateway: NVIDIA client (OpenAI-compatible), JSON extraction, schema validation, 1 repair retry, rate-limit backoff | done (tested with a fake model; not yet run against NVIDIA) |
+| 3 | Forge on NVIDIA + server cache of built trees; `/system/awaken` | done |
+| 4 | `/system/assess`, `/system/quest`, `/system/evaluate`, `/system/hint` with validation | done |
+| 5 | App engines: learner model, planner, rank, XP/level, stats (unit tests) | done |
+| 6 | App state store on the phone | done (AsyncStorage) |
+| 7 | System UI kit: window, notification, bars | done |
+| 8 | Screens: Awakening, Assessment, Status, Quest, Result, Skill tree | done; full loop clicked through in a browser against the real backend with a scripted model |
+| 9 | Daily quest + penalty quest + retests | done |
 | 10 | CI green, then a run on a real phone with a real NVIDIA key | needs you |
 
 ## Later

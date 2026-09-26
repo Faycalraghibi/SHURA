@@ -1,17 +1,32 @@
 # SHURA
 
-A mobile app that turns any skill into an evidence-based path from F Rank to S Rank.
+The System from Solo Leveling, for studying. Name any skill; the System reads your level, gives you
+quests, judges what you submit, and you rank up from F to S only by proving you can do it.
 
-- `docs/IMPLEMENTATION_PLAN.md`: engineering plan (Android first) and P0 status
-- `docs/FORGE_BENCHMARK.md`: the 25-skill Forge benchmark
-- `packs/`: standard program format v1: rank definitions, JSON Schema, hand-written packs
-- `backend/`: FastAPI backend: format, validator, ceiling rule, pack registry, Skill Forge prototype, LLM gateway
-- `mobile/`: Expo (React Native) app, Android first
+- `docs/VISION.md`: the original idea (source of truth)
+- `docs/IMPLEMENTATION_PLAN.md`: how it is built, Android first, and what is done
+- `packs/`: skill tree format, rank definitions and hand-written skill trees
+- `backend/`: FastAPI server: the System endpoints, skill tree builder (Forge), validator, NVIDIA gateway
+- `mobile/`: the Expo (React Native) app; progress is saved on the phone
+
+## Run it
 
 ```bash
-cd backend && pip install -e ".[dev]" && pytest
-python scripts/validate_packs.py
-uvicorn shura.api.app:app --host 0.0.0.0 --reload
+# 1. backend (holds your free NVIDIA key from build.nvidia.com)
+cd backend && pip install -e ".[dev]"
+export NVIDIA_API_KEY=nvapi-...
+uvicorn shura.api.app:app --host 0.0.0.0 --port 8000
 
-cd mobile && npm install && npx expo start --android
+# 2. app, on an Android phone with Expo Go, same Wi-Fi as the computer
+cd mobile && npm install
+EXPO_PUBLIC_API_URL=http://<your-computer-lan-ip>:8000 npx expo start
+```
+
+Optional: `SHURA_MODEL=<model id>` picks another NVIDIA model (default `meta/llama-3.3-70b-instruct`).
+
+## Checks
+
+```bash
+cd backend && pytest -q && python scripts/validate_packs.py
+cd mobile && npm run typecheck && npm test
 ```
