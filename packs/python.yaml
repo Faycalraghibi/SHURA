@@ -1,0 +1,139 @@
+pack: python
+name: Python
+aliases: [python programming, python basics, python 3, learn python, python for data analysis]
+scope: General-purpose Python 3 programming, from first scripts to idiomatic, tested code
+version: 0.1.0
+maturity: draft
+freshness: slow
+sources:
+  - {id: s1, kind: documentation, title: "The Python Tutorial (docs.python.org)", url: "https://docs.python.org/3/tutorial/"}
+  - {id: s2, kind: syllabus, title: "Introductory university programming course in Python (CS1) syllabus"}
+  - {id: s3, kind: certification, title: "Python Institute PCEP and PCAP exam syllabi", url: "https://pythoninstitute.org/"}
+  - {id: s4, kind: book, title: "Think Python, table of contents"}
+competencies:
+  - id: basics.values_types
+    name: Values, variables and types
+    tier: F
+    prerequisites: []
+    mastery_criteria: Predicts the type and value of expressions using int, float, str and bool, and assigns variables.
+    common_mistakes: [concatenates str and int, confuses = and ==]
+    adapters: [choice, exact_answer, code]
+    grounded_in: [s1, s2, s3]
+  - id: basics.conditionals
+    name: Branch with if, elif and else
+    tier: F
+    prerequisites: [basics.values_types]
+    mastery_criteria: Writes conditionals with comparison and boolean operators and predicts which branch runs.
+    adapters: [choice, exact_answer, code]
+    grounded_in: [s1, s2, s3]
+  - id: basics.loops
+    name: Repeat with for and while loops
+    tier: F
+    prerequisites: [basics.conditionals]
+    mastery_criteria: Writes for loops over ranges and sequences and while loops that terminate, using break and continue.
+    common_mistakes: [off-by-one in range, infinite while loop]
+    adapters: [choice, exact_answer, code]
+    grounded_in: [s1, s2, s3]
+  - id: functions.define
+    name: Define and call functions
+    tier: E
+    prerequisites: [basics.loops]
+    mastery_criteria: Writes functions with parameters, default values and return values, and distinguishes return from print.
+    common_mistakes: [prints instead of returning, uses a mutable default argument]
+    adapters: [choice, code]
+    grounded_in: [s1, s2, s3, s4]
+  - id: collections.lists
+    name: Work with lists and tuples
+    tier: E
+    prerequisites: [basics.loops]
+    mastery_criteria: Indexes, slices, appends to and iterates over lists, and explains when a tuple fits better.
+    adapters: [choice, exact_answer, code]
+    grounded_in: [s1, s2, s3]
+  - id: collections.dicts_sets
+    name: Work with dictionaries and sets
+    tier: E
+    prerequisites: [collections.lists]
+    mastery_criteria: Counts, groups and looks up data with dicts and sets and picks the right structure for a task.
+    adapters: [choice, code]
+    grounded_in: [s1, s2, s3]
+  - id: strings.methods
+    name: Manipulate strings
+    tier: E
+    prerequisites: [collections.lists]
+    mastery_criteria: Uses split, join, strip, replace, f-strings and slicing to transform text.
+    adapters: [choice, exact_answer, code]
+    grounded_in: [s1, s3]
+  - id: errors.exceptions
+    name: Handle errors with exceptions
+    tier: D
+    prerequisites: [functions.define]
+    mastery_criteria: Reads tracebacks, catches specific exceptions with try/except/finally and raises meaningful errors.
+    common_mistakes: [bare except that hides bugs]
+    adapters: [choice, code]
+    grounded_in: [s1, s3]
+  - id: debugging.reading_code
+    name: Find and fix bugs in given code
+    tier: D
+    prerequisites: [functions.define, collections.dicts_sets]
+    mastery_criteria: Locates and fixes logic errors in unfamiliar functions of about 20 lines using tests and prints.
+    adapters: [code, choice]
+    grounded_in: [s2, s4]
+  - id: files.io
+    name: Read and write files
+    tier: D
+    prerequisites: [strings.methods, errors.exceptions]
+    mastery_criteria: Reads and writes text and CSV files with context managers and handles missing files.
+    adapters: [code, choice]
+    grounded_in: [s1, s3]
+  - id: modules.imports
+    name: Organize code in modules and use the standard library
+    tier: D
+    prerequisites: [functions.define]
+    mastery_criteria: Splits code into modules, imports correctly and uses collections, itertools and pathlib.
+    adapters: [choice, code]
+    grounded_in: [s1, s3]
+  - id: comprehensions
+    name: Write comprehensions and generators
+    tier: C
+    prerequisites: [collections.dicts_sets, functions.define]
+    mastery_criteria: Rewrites loops as list, dict and set comprehensions and generators, and judges when a loop reads better.
+    adapters: [code, choice]
+    grounded_in: [s1, s3]
+  - id: oop.classes
+    name: Model data with classes
+    tier: C
+    prerequisites: [functions.define, collections.dicts_sets]
+    mastery_criteria: Writes classes with __init__, methods, properties and dataclasses, and explains composition versus inheritance.
+    adapters: [code, written]
+    grounded_in: [s1, s3, s4]
+  - id: testing.pytest
+    name: Test code with pytest
+    tier: C
+    prerequisites: [errors.exceptions, modules.imports]
+    mastery_criteria: Writes pytest tests that cover normal, edge and error cases for a given function.
+    adapters: [code]
+    grounded_in: [s3]
+  - id: complexity.basics
+    name: Reason about performance
+    tier: B
+    prerequisites: [comprehensions, collections.dicts_sets]
+    mastery_criteria: Estimates the time complexity of code and replaces quadratic patterns with suitable data structures.
+    adapters: [code, choice, written]
+    grounded_in: [s2, s4]
+  - id: advanced.functional
+    name: Use closures, decorators and iterators
+    tier: B
+    prerequisites: [comprehensions, oop.classes]
+    mastery_criteria: Writes closures, decorators and custom iterators and explains how they work.
+    adapters: [code, written]
+    grounded_in: [s1, s3]
+  - id: project.cli_tool
+    name: Build a tested command-line tool
+    tier: A
+    prerequisites: [testing.pytest, files.io, advanced.functional]
+    mastery_criteria: Delivers a small packaged CLI with tests and a README, and defends its design choices.
+    adapters: [project]
+    grounded_in: [s3, s4]
+goal_templates:
+  - {name: first_programming_job, target_rank: C, emphasis: [functions, collections, testing, debugging]}
+  - {name: data_analysis, target_rank: D, emphasis: [collections, files, strings]}

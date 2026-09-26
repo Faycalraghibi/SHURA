@@ -1,0 +1,78 @@
+{
+  "$defs": {
+    "RankDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "rank": {
+          "$ref": "#/$defs/Tier"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "meaning": {
+          "title": "Meaning",
+          "type": "string"
+        },
+        "observable": {
+          "title": "Observable",
+          "type": "string"
+        },
+        "evidence_focus": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Focus",
+          "type": "array"
+        },
+        "trial": {
+          "title": "Trial",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rank",
+        "title",
+        "meaning",
+        "observable",
+        "evidence_focus",
+        "trial"
+      ],
+      "title": "RankDefinition",
+      "type": "object"
+    },
+    "Tier": {
+      "enum": [
+        "F",
+        "E",
+        "D",
+        "C",
+        "B",
+        "A",
+        "S"
+      ],
+      "title": "Tier",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "format_version": {
+      "title": "Format Version",
+      "type": "integer"
+    },
+    "ranks": {
+      "items": {
+        "$ref": "#/$defs/RankDefinition"
+      },
+      "title": "Ranks",
+      "type": "array"
+    }
+  },
+  "required": [
+    "format_version",
+    "ranks"
+  ],
+  "title": "RankDefinitions",
+  "type": "object"
+}

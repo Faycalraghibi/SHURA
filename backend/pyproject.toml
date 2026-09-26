@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shura"
+version = "0.1.0"
+description = "SHURA backend: standard program format, pack registry, Skill Forge and API"
+requires-python = ">=3.11"
+dependencies = [
+  "pydantic>=2.7",
+  "pyyaml>=6",
+  "fastapi>=0.115",
+  "uvicorn>=0.30",
+  "anthropic>=0.60",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "httpx>=0.27"]
+
+[tool.setuptools.packages.find]
+include = ["shura*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

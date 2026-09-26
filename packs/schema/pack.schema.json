@@ -1,0 +1,273 @@
+{
+  "$defs": {
+    "Competency": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "minLength": 3,
+          "title": "Name",
+          "type": "string"
+        },
+        "tier": {
+          "$ref": "#/$defs/Tier"
+        },
+        "prerequisites": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Prerequisites",
+          "type": "array"
+        },
+        "mastery_criteria": {
+          "minLength": 10,
+          "title": "Mastery Criteria",
+          "type": "string"
+        },
+        "common_mistakes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Common Mistakes",
+          "type": "array"
+        },
+        "adapters": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Adapters",
+          "type": "array"
+        },
+        "verifiability": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Trust"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "grounded_in": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Grounded In",
+          "type": "array"
+        },
+        "core": {
+          "default": true,
+          "title": "Core",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "tier",
+        "mastery_criteria",
+        "adapters"
+      ],
+      "title": "Competency",
+      "type": "object"
+    },
+    "Freshness": {
+      "enum": [
+        "slow",
+        "fast"
+      ],
+      "title": "Freshness",
+      "type": "string"
+    },
+    "GoalTemplate": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "pattern": "^[a-z0-9_]+$",
+          "title": "Name",
+          "type": "string"
+        },
+        "target_rank": {
+          "$ref": "#/$defs/Tier"
+        },
+        "emphasis": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Emphasis",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "target_rank"
+      ],
+      "title": "GoalTemplate",
+      "type": "object"
+    },
+    "Maturity": {
+      "enum": [
+        "draft",
+        "calibrated",
+        "reviewed"
+      ],
+      "title": "Maturity",
+      "type": "string"
+    },
+    "Source": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z0-9_]+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/SourceKind"
+        },
+        "title": {
+          "minLength": 3,
+          "title": "Title",
+          "type": "string"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Url"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "title"
+      ],
+      "title": "Source",
+      "type": "object"
+    },
+    "SourceKind": {
+      "enum": [
+        "framework",
+        "syllabus",
+        "certification",
+        "documentation",
+        "book",
+        "course",
+        "other"
+      ],
+      "title": "SourceKind",
+      "type": "string"
+    },
+    "Tier": {
+      "enum": [
+        "F",
+        "E",
+        "D",
+        "C",
+        "B",
+        "A",
+        "S"
+      ],
+      "title": "Tier",
+      "type": "string"
+    },
+    "Trust": {
+      "enum": [
+        "objective",
+        "rubric",
+        "mixed",
+        "self_reported"
+      ],
+      "title": "Trust",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "pack": {
+      "title": "Pack",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "aliases": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Aliases",
+      "type": "array"
+    },
+    "scope": {
+      "minLength": 10,
+      "title": "Scope",
+      "type": "string"
+    },
+    "version": {
+      "title": "Version",
+      "type": "string"
+    },
+    "maturity": {
+      "$ref": "#/$defs/Maturity",
+      "default": "draft"
+    },
+    "freshness": {
+      "$ref": "#/$defs/Freshness",
+      "default": "slow"
+    },
+    "verified_ceiling": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Tier"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "sources": {
+      "items": {
+        "$ref": "#/$defs/Source"
+      },
+      "title": "Sources",
+      "type": "array"
+    },
+    "competencies": {
+      "items": {
+        "$ref": "#/$defs/Competency"
+      },
+      "minItems": 1,
+      "title": "Competencies",
+      "type": "array"
+    },
+    "goal_templates": {
+      "items": {
+        "$ref": "#/$defs/GoalTemplate"
+      },
+      "title": "Goal Templates",
+      "type": "array"
+    }
+  },
+  "required": [
+    "pack",
+    "name",
+    "scope",
+    "version",
+    "competencies"
+  ],
+  "title": "SkillPack",
+  "type": "object"
+}
