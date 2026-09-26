@@ -60,13 +60,24 @@ async function post<T>(path: string, body: unknown, timeoutMs: number): Promise<
   if (!API_URL) throw new SystemUnavailable('No server configured. Set EXPO_PUBLIC_API_URL to your SHURA backend.');
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
+  let res: Response;
   try {
-    const res = await fetch(`${API_URL}${path}`, {
+    res = await fetch(`${API_URL}${path}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
       signal: controller.signal,
     });
+  } catch (e) {
+    clearTimeout(timer);
+    if (e instanceof Error && e.name === 'AbortError') throw new Error('The System took too long to answer. Try again.');
+    // Any failure before a response arrives (refused, no route, firewall) means the server is
+    // unreachable. The error type differs per platform, so no instanceof check here.
+    throw new SystemUnavailable(
+      `The System is unreachable at ${API_URL}. Is the backend running, on the same Wi-Fi, and allowed through the firewall?`,
+    );
+  }
+  try {
     if (!res.ok) {
       let detail = `HTTP ${res.status}`;
       try {
@@ -78,10 +89,6 @@ async function post<T>(path: string, body: unknown, timeoutMs: number): Promise<
       throw new Error(detail);
     }
     return (await res.json()) as T;
-  } catch (e) {
-    if (e instanceof Error && e.name === 'AbortError') throw new Error('The System took too long to answer. Try again.');
-    if (e instanceof TypeError) throw new SystemUnavailable('The System is unreachable. Is the backend running and on the same network?');
-    throw e;
   } finally {
     clearTimeout(timer);
   }
