@@ -22,6 +22,27 @@ cd mobile && npm install
 EXPO_PUBLIC_API_URL=http://<your-computer-lan-ip>:8000 npx expo start
 ```
 
+On Windows (PowerShell), set variables with `$env:` and run uvicorn through Python:
+
+```powershell
+cd backend; python -m pip install -e ".[dev]"
+$env:NVIDIA_API_KEY = "nvapi-..."
+python -m uvicorn shura.api.app:app --host 0.0.0.0 --port 8000
+
+# second window
+cd mobile; npm install
+$env:EXPO_PUBLIC_API_URL = "http://<your-computer-lan-ip>:8000"   # from ipconfig
+npx expo start --clear
+```
+
+If the phone cannot reach the server, check `http://<ip>:8000/health` in the phone's browser. When it
+fails there but works on the computer, allow port 8000 through Windows Firewall (PowerShell as
+Administrator):
+
+```powershell
+New-NetFirewallRule -DisplayName "SHURA dev server" -Direction Inbound -Protocol TCP -LocalPort 8000 -Action Allow -Profile Any
+```
+
 Optional: `SHURA_MODEL=<model id>` picks another NVIDIA model (default `meta/llama-3.3-70b-instruct`).
 
 ## Checks
