@@ -1,0 +1,116 @@
+pack: japanese
+name: Japanese
+aliases: [japanese language, learn japanese, nihongo, jlpt, japanese kana, hiragana]
+scope: General Japanese for adult learners, JLPT-aligned
+version: 0.1.0
+maturity: draft
+freshness: slow
+sources:
+  - {id: s1, kind: framework, title: "JLPT level summaries (N5 to N1)", url: "https://www.jlpt.jp/e/about/levelsummary.html"}
+  - {id: s2, kind: framework, title: "CEFR common reference levels", url: "https://www.coe.int/en/web/common-european-framework-reference-languages/level-descriptions"}
+  - {id: s3, kind: syllabus, title: "University first-year Japanese syllabus"}
+competencies:
+  - id: kana.hiragana.read
+    name: Read all hiragana
+    tier: F
+    prerequisites: []
+    mastery_criteria: Reads any hiragana word aloud without a chart.
+    adapters: [choice, exact_answer, spoken]
+    grounded_in: [s1, s3]
+  - id: kana.katakana.read
+    name: Read all katakana
+    tier: F
+    prerequisites: [kana.hiragana.read]
+    mastery_criteria: Reads katakana loanwords, including long vowels and small kana, without a chart.
+    adapters: [choice, exact_answer]
+    grounded_in: [s1, s3]
+  - id: grammar.desu_masu
+    name: Build polite sentences with desu and masu
+    tier: E
+    prerequisites: [kana.hiragana.read]
+    mastery_criteria: Forms affirmative, negative and past polite sentences with desu and masu verbs.
+    common_mistakes: [mixes plain and polite forms]
+    adapters: [choice, exact_answer, written]
+    grounded_in: [s1, s3]
+  - id: grammar.particles.basic
+    name: Use the particles wa, ga, o, ni, de
+    tier: E
+    prerequisites: [grammar.desu_masu]
+    mastery_criteria: Chooses the right basic particle in a sentence and explains the choice.
+    common_mistakes: [drops the topic particle, confuses ni and de for location]
+    adapters: [choice, exact_answer]
+    grounded_in: [s1, s3]
+  - id: speaking.self_introduction
+    name: Introduce yourself politely
+    tier: E
+    prerequisites: [kana.hiragana.read, grammar.desu_masu]
+    mastery_criteria: Gives a 30-second self-introduction in polite form that a native listener understands.
+    common_mistakes: [mixes plain and polite forms, drops the topic particle]
+    adapters: [spoken]
+    grounded_in: [s2, s3]
+  - id: kanji.n5
+    name: Read N5 kanji
+    tier: D
+    prerequisites: [kana.katakana.read]
+    mastery_criteria: Reads and gives the meaning of the roughly 100 kanji listed for JLPT N5 in context.
+    adapters: [choice, exact_answer]
+    grounded_in: [s1]
+  - id: grammar.te_form
+    name: Use the te-form
+    tier: D
+    prerequisites: [grammar.particles.basic]
+    mastery_criteria: Conjugates verbs into the te-form and uses it for requests, sequences and ongoing actions.
+    adapters: [choice, exact_answer, written]
+    grounded_in: [s1, s3]
+  - id: listening.everyday
+    name: Understand everyday conversations
+    tier: D
+    prerequisites: [grammar.particles.basic]
+    mastery_criteria: Answers questions about short, slow everyday dialogues heard once.
+    adapters: [choice]
+    grounded_in: [s1, s2]
+  - id: grammar.plain_form
+    name: Switch between plain and polite speech
+    tier: C
+    prerequisites: [grammar.te_form]
+    mastery_criteria: Converts sentences between plain and polite forms and picks the register a situation needs.
+    adapters: [choice, written, spoken]
+    grounded_in: [s1, s3]
+  - id: reading.short_texts
+    name: Read short texts (N4 to N3)
+    tier: C
+    prerequisites: [kanji.n5, grammar.te_form]
+    mastery_criteria: Answers comprehension questions on short passages at JLPT N4 to N3 level.
+    adapters: [choice, written]
+    grounded_in: [s1]
+  - id: speaking.conversation
+    name: Hold a simple conversation
+    tier: B
+    prerequisites: [grammar.plain_form, listening.everyday]
+    mastery_criteria: Sustains a five-minute conversation on familiar topics, recovering from misunderstandings.
+    adapters: [spoken]
+    grounded_in: [s2]
+  - id: grammar.keigo
+    name: Use honorific and humble language
+    tier: B
+    prerequisites: [grammar.plain_form]
+    mastery_criteria: Uses sonkeigo and kenjougo correctly in workplace and service situations.
+    adapters: [choice, written]
+    grounded_in: [s1, s3]
+  - id: pronunciation.pitch_accent
+    name: Produce natural pitch accent
+    tier: A
+    prerequisites: [speaking.conversation]
+    mastery_criteria: Produces standard pitch accent on common words and phrases, as measured against native recordings.
+    adapters: [audio_analysis]
+    grounded_in: [s2]
+  - id: speaking.native_speed
+    name: Discuss abstract topics at native speed
+    tier: S
+    prerequisites: [pronunciation.pitch_accent, grammar.keigo, reading.short_texts]
+    mastery_criteria: Discusses abstract topics fluently with natural rhythm and intonation.
+    adapters: [audio_analysis]
+    grounded_in: [s2]
+goal_templates:
+  - {name: travel, target_rank: D, emphasis: [speaking, listening]}
+  - {name: jlpt_n3, target_rank: C, emphasis: [reading, grammar, kanji]}

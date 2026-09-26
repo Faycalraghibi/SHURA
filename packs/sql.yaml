@@ -1,0 +1,136 @@
+pack: sql
+name: SQL
+aliases: [sql basics, structured query language, sql for data analysis, postgres, postgresql]
+scope: Querying relational databases with standard SQL (PostgreSQL dialect), for data and backend roles
+version: 0.1.0
+maturity: draft
+freshness: slow
+sources:
+  - {id: s1, kind: documentation, title: "PostgreSQL documentation: Tutorial and SQL Language chapters", url: "https://www.postgresql.org/docs/current/tutorial.html"}
+  - {id: s2, kind: course, title: "SQLBolt interactive lessons", url: "https://sqlbolt.com/"}
+  - {id: s3, kind: syllabus, title: "Introductory university databases course syllabus (relational model, SQL, joins, aggregation)"}
+  - {id: s4, kind: certification, title: "Vendor-neutral SQL associate certification outline"}
+competencies:
+  - id: select.basic
+    name: Select columns from a table
+    tier: F
+    prerequisites: []
+    mastery_criteria: Writes SELECT ... FROM ... returning the requested columns, including aliases with AS.
+    common_mistakes: [forgets FROM, quotes column names with single quotes]
+    adapters: [choice, code]
+    grounded_in: [s1, s2, s3]
+  - id: filter.where
+    name: Filter rows with WHERE
+    tier: F
+    prerequisites: [select.basic]
+    mastery_criteria: Filters rows with comparison operators, AND, OR, IN, BETWEEN and LIKE.
+    common_mistakes: [mixes AND and OR without parentheses, uses = NULL]
+    adapters: [choice, code]
+    grounded_in: [s1, s2, s3]
+  - id: sort.limit
+    name: Sort and limit results
+    tier: F
+    prerequisites: [select.basic]
+    mastery_criteria: Orders results by one or more columns in either direction and limits the row count.
+    adapters: [choice, code]
+    grounded_in: [s1, s2]
+  - id: nulls.handling
+    name: Handle NULL correctly
+    tier: E
+    prerequisites: [filter.where]
+    mastery_criteria: Uses IS NULL, IS NOT NULL and COALESCE and predicts how NULL behaves in comparisons.
+    common_mistakes: [uses = NULL, expects NULL = NULL to be true]
+    adapters: [choice, exact_answer, code]
+    grounded_in: [s1, s3]
+  - id: aggregate.basic
+    name: Aggregate with COUNT, SUM, AVG, MIN, MAX
+    tier: E
+    prerequisites: [filter.where]
+    mastery_criteria: Computes aggregates over a whole table and predicts how COUNT(*) differs from COUNT(column).
+    adapters: [choice, exact_answer, code]
+    grounded_in: [s1, s2, s3]
+  - id: aggregate.group_by
+    name: Group rows with GROUP BY and HAVING
+    tier: E
+    prerequisites: [aggregate.basic]
+    mastery_criteria: Groups rows, aggregates per group, and filters groups with HAVING rather than WHERE.
+    common_mistakes: [selects non-grouped columns, filters aggregates in WHERE]
+    adapters: [choice, code]
+    grounded_in: [s1, s2, s3]
+  - id: join.inner
+    name: Join tables with INNER JOIN
+    tier: E
+    prerequisites: [filter.where]
+    mastery_criteria: Joins two or more tables on keys and qualifies ambiguous column names.
+    common_mistakes: [joins on the wrong key, produces a cartesian product]
+    adapters: [choice, code]
+    grounded_in: [s1, s2, s3]
+  - id: join.outer
+    name: Keep unmatched rows with LEFT and FULL JOIN
+    tier: D
+    prerequisites: [join.inner, nulls.handling]
+    mastery_criteria: Chooses between inner and outer joins and finds rows with no match using an outer join.
+    common_mistakes: [filters the outer table in WHERE and turns the join back into an inner join]
+    adapters: [choice, code]
+    grounded_in: [s1, s2, s3]
+  - id: subqueries
+    name: Use subqueries
+    tier: D
+    prerequisites: [aggregate.group_by, join.inner]
+    mastery_criteria: Writes scalar, IN and EXISTS subqueries, including correlated ones.
+    adapters: [code, choice]
+    grounded_in: [s1, s3]
+  - id: modify.dml
+    name: Insert, update and delete rows
+    tier: D
+    prerequisites: [filter.where]
+    mastery_criteria: Writes INSERT, UPDATE and DELETE statements that affect exactly the intended rows.
+    common_mistakes: [UPDATE without WHERE]
+    adapters: [code, choice]
+    grounded_in: [s1, s4]
+  - id: schema.ddl
+    name: Design tables with keys and constraints
+    tier: D
+    prerequisites: [modify.dml]
+    mastery_criteria: Creates tables with suitable types, primary keys, foreign keys, NOT NULL and UNIQUE constraints.
+    adapters: [code, written]
+    grounded_in: [s1, s3, s4]
+  - id: cte
+    name: Structure queries with CTEs
+    tier: C
+    prerequisites: [subqueries]
+    mastery_criteria: Rewrites nested queries as WITH clauses and writes a recursive CTE over a hierarchy.
+    adapters: [code]
+    grounded_in: [s1, s4]
+  - id: window.functions
+    name: Analyze with window functions
+    tier: C
+    prerequisites: [aggregate.group_by, sort.limit]
+    mastery_criteria: Uses ROW_NUMBER, RANK, LAG, LEAD and running totals with PARTITION BY and ORDER BY.
+    common_mistakes: [confuses window functions with GROUP BY, misplaces the frame clause]
+    adapters: [code, choice]
+    grounded_in: [s1, s4]
+  - id: normalization
+    name: Normalize a schema
+    tier: C
+    prerequisites: [schema.ddl]
+    mastery_criteria: Explains and applies first to third normal form and justifies deliberate denormalization.
+    adapters: [written, choice]
+    grounded_in: [s3]
+  - id: transactions
+    name: Reason about transactions and isolation
+    tier: B
+    prerequisites: [modify.dml]
+    mastery_criteria: Uses transactions correctly and predicts anomalies under each isolation level.
+    adapters: [choice, written, code]
+    grounded_in: [s1, s3]
+  - id: performance.indexes
+    name: Speed up queries with indexes and EXPLAIN
+    tier: B
+    prerequisites: [schema.ddl, join.outer, subqueries]
+    mastery_criteria: Reads an EXPLAIN plan, chooses indexes that help a given workload, and explains the cost of each.
+    adapters: [written, code]
+    grounded_in: [s1, s4]
+goal_templates:
+  - {name: data_analyst, target_rank: C, emphasis: [aggregate, join, window, cte]}
+  - {name: backend_developer, target_rank: B, emphasis: [schema, modify, transactions, performance]}

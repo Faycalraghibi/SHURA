@@ -1,0 +1,1341 @@
+{
+ "ranks": {
+  "format_version": 1,
+  "ranks": [
+   {
+    "rank": "F",
+    "title": "Foundations",
+    "meaning": "Knows the basic vocabulary and building blocks of the skill.",
+    "observable": "Recognizes and recalls the core elements; completes guided exercises with scaffolding.",
+    "evidence_focus": [
+     "recognition",
+     "recall",
+     "production"
+    ],
+    "trial": "Recognition items and guided production."
+   },
+   {
+    "rank": "E",
+    "title": "Basic application",
+    "meaning": "Applies single ideas to standard, familiar tasks.",
+    "observable": "Solves standard tasks that use one concept at a time, with light scaffolding.",
+    "evidence_focus": [
+     "recall",
+     "production",
+     "explanation"
+    ],
+    "trial": "Standard tasks with light scaffolding."
+   },
+   {
+    "rank": "D",
+    "title": "Independent application",
+    "meaning": "Works without help on ordinary tasks and finds their own mistakes.",
+    "observable": "Produces correct work from a blank page and locates and fixes errors in given work.",
+    "evidence_focus": [
+     "production",
+     "debugging",
+     "modification"
+    ],
+    "trial": "Independent production and error-finding."
+   },
+   {
+    "rank": "C",
+    "title": "Transfer",
+    "meaning": "Handles unfamiliar variations and explains why one approach beats another.",
+    "observable": "Solves problems framed in unfamiliar ways and justifies trade-offs between approaches.",
+    "evidence_focus": [
+     "transfer",
+     "explanation"
+    ],
+    "trial": "Unfamiliar variations and explaining trade-offs."
+   },
+   {
+    "rank": "B",
+    "title": "Advanced problems",
+    "meaning": "Combines several advanced concepts on problems nobody has walked them through.",
+    "observable": "Solves hard, unfamiliar problems that combine several concepts, without hints.",
+    "evidence_focus": [
+     "transfer",
+     "production"
+    ],
+    "trial": "Hard tasks combining several concepts."
+   },
+   {
+    "rank": "A",
+    "title": "Broad advanced mastery",
+    "meaning": "Consistent advanced performance across the whole skill.",
+    "observable": "Performs well on hard tasks drawn from anywhere in the graph and defends a project design.",
+    "evidence_focus": [
+     "transfer",
+     "production",
+     "explanation"
+    ],
+    "trial": "Hard tasks across the whole graph plus a project with a design defense."
+   },
+   {
+    "rank": "S",
+    "title": "Sustained mastery",
+    "meaning": "Advanced mastery that has lasted and can be taught to others.",
+    "observable": "Holds rank A for 90+ days with every retest passed, completes a capstone and a teach-back.",
+    "evidence_focus": [
+     "transfer",
+     "explanation"
+    ],
+    "trial": "Capstone and teach-back after 90 days at rank A."
+   }
+  ]
+ },
+ "summaries": [
+  {
+   "pack": "japanese",
+   "name": "Japanese",
+   "scope": "General Japanese for adult learners, JLPT-aligned",
+   "version": "0.1.0",
+   "maturity": "draft",
+   "verified_ceiling": "B",
+   "ceiling_message": "SHURA can verify Japanese up to Rank B. Beyond that it guides your training but cannot certify it.",
+   "competency_count": 14,
+   "top_tier": "S"
+  },
+  {
+   "pack": "python",
+   "name": "Python",
+   "scope": "General-purpose Python 3 programming, from first scripts to idiomatic, tested code",
+   "version": "0.1.0",
+   "maturity": "draft",
+   "verified_ceiling": "S",
+   "ceiling_message": "SHURA can verify Python all the way to Rank S.",
+   "competency_count": 17,
+   "top_tier": "A"
+  },
+  {
+   "pack": "sql",
+   "name": "SQL",
+   "scope": "Querying relational databases with standard SQL (PostgreSQL dialect), for data and backend roles",
+   "version": "0.1.0",
+   "maturity": "draft",
+   "verified_ceiling": "B",
+   "ceiling_message": "SHURA can verify SQL up to Rank B. Beyond that it guides your training but cannot certify it.",
+   "competency_count": 16,
+   "top_tier": "B"
+  }
+ ],
+ "packs": {
+  "japanese": {
+   "pack": "japanese",
+   "name": "Japanese",
+   "scope": "General Japanese for adult learners, JLPT-aligned",
+   "version": "0.1.0",
+   "maturity": "draft",
+   "verified_ceiling": "B",
+   "ceiling_message": "SHURA can verify Japanese up to Rank B. Beyond that it guides your training but cannot certify it.",
+   "competency_count": 14,
+   "top_tier": "S",
+   "format_version": 1,
+   "freshness": "slow",
+   "sources": [
+    {
+     "id": "s1",
+     "kind": "framework",
+     "title": "JLPT level summaries (N5 to N1)",
+     "url": "https://www.jlpt.jp/e/about/levelsummary.html"
+    },
+    {
+     "id": "s2",
+     "kind": "framework",
+     "title": "CEFR common reference levels",
+     "url": "https://www.coe.int/en/web/common-european-framework-reference-languages/level-descriptions"
+    },
+    {
+     "id": "s3",
+     "kind": "syllabus",
+     "title": "University first-year Japanese syllabus",
+     "url": null
+    }
+   ],
+   "competencies": [
+    {
+     "id": "kana.hiragana.read",
+     "name": "Read all hiragana",
+     "tier": "F",
+     "prerequisites": [],
+     "mastery_criteria": "Reads any hiragana word aloud without a chart.",
+     "common_mistakes": [],
+     "adapters": [
+      "choice",
+      "exact_answer",
+      "spoken"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "kana.katakana.read",
+     "name": "Read all katakana",
+     "tier": "F",
+     "prerequisites": [
+      "kana.hiragana.read"
+     ],
+     "mastery_criteria": "Reads katakana loanwords, including long vowels and small kana, without a chart.",
+     "common_mistakes": [],
+     "adapters": [
+      "choice",
+      "exact_answer"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "grammar.desu_masu",
+     "name": "Build polite sentences with desu and masu",
+     "tier": "E",
+     "prerequisites": [
+      "kana.hiragana.read"
+     ],
+     "mastery_criteria": "Forms affirmative, negative and past polite sentences with desu and masu verbs.",
+     "common_mistakes": [
+      "mixes plain and polite forms"
+     ],
+     "adapters": [
+      "choice",
+      "exact_answer",
+      "written"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "grammar.particles.basic",
+     "name": "Use the particles wa, ga, o, ni, de",
+     "tier": "E",
+     "prerequisites": [
+      "grammar.desu_masu"
+     ],
+     "mastery_criteria": "Chooses the right basic particle in a sentence and explains the choice.",
+     "common_mistakes": [
+      "drops the topic particle",
+      "confuses ni and de for location"
+     ],
+     "adapters": [
+      "choice",
+      "exact_answer"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "speaking.self_introduction",
+     "name": "Introduce yourself politely",
+     "tier": "E",
+     "prerequisites": [
+      "kana.hiragana.read",
+      "grammar.desu_masu"
+     ],
+     "mastery_criteria": "Gives a 30-second self-introduction in polite form that a native listener understands.",
+     "common_mistakes": [
+      "mixes plain and polite forms",
+      "drops the topic particle"
+     ],
+     "adapters": [
+      "spoken"
+     ],
+     "verifiability": "rubric",
+     "grounded_in": [
+      "s2",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "kanji.n5",
+     "name": "Read N5 kanji",
+     "tier": "D",
+     "prerequisites": [
+      "kana.katakana.read"
+     ],
+     "mastery_criteria": "Reads and gives the meaning of the roughly 100 kanji listed for JLPT N5 in context.",
+     "common_mistakes": [],
+     "adapters": [
+      "choice",
+      "exact_answer"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1"
+     ],
+     "core": true
+    },
+    {
+     "id": "grammar.te_form",
+     "name": "Use the te-form",
+     "tier": "D",
+     "prerequisites": [
+      "grammar.particles.basic"
+     ],
+     "mastery_criteria": "Conjugates verbs into the te-form and uses it for requests, sequences and ongoing actions.",
+     "common_mistakes": [],
+     "adapters": [
+      "choice",
+      "exact_answer",
+      "written"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "listening.everyday",
+     "name": "Understand everyday conversations",
+     "tier": "D",
+     "prerequisites": [
+      "grammar.particles.basic"
+     ],
+     "mastery_criteria": "Answers questions about short, slow everyday dialogues heard once.",
+     "common_mistakes": [],
+     "adapters": [
+      "choice"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s2"
+     ],
+     "core": true
+    },
+    {
+     "id": "grammar.plain_form",
+     "name": "Switch between plain and polite speech",
+     "tier": "C",
+     "prerequisites": [
+      "grammar.te_form"
+     ],
+     "mastery_criteria": "Converts sentences between plain and polite forms and picks the register a situation needs.",
+     "common_mistakes": [],
+     "adapters": [
+      "choice",
+      "written",
+      "spoken"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "reading.short_texts",
+     "name": "Read short texts (N4 to N3)",
+     "tier": "C",
+     "prerequisites": [
+      "kanji.n5",
+      "grammar.te_form"
+     ],
+     "mastery_criteria": "Answers comprehension questions on short passages at JLPT N4 to N3 level.",
+     "common_mistakes": [],
+     "adapters": [
+      "choice",
+      "written"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1"
+     ],
+     "core": true
+    },
+    {
+     "id": "speaking.conversation",
+     "name": "Hold a simple conversation",
+     "tier": "B",
+     "prerequisites": [
+      "grammar.plain_form",
+      "listening.everyday"
+     ],
+     "mastery_criteria": "Sustains a five-minute conversation on familiar topics, recovering from misunderstandings.",
+     "common_mistakes": [],
+     "adapters": [
+      "spoken"
+     ],
+     "verifiability": "rubric",
+     "grounded_in": [
+      "s2"
+     ],
+     "core": true
+    },
+    {
+     "id": "grammar.keigo",
+     "name": "Use honorific and humble language",
+     "tier": "B",
+     "prerequisites": [
+      "grammar.plain_form"
+     ],
+     "mastery_criteria": "Uses sonkeigo and kenjougo correctly in workplace and service situations.",
+     "common_mistakes": [],
+     "adapters": [
+      "choice",
+      "written"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "pronunciation.pitch_accent",
+     "name": "Produce natural pitch accent",
+     "tier": "A",
+     "prerequisites": [
+      "speaking.conversation"
+     ],
+     "mastery_criteria": "Produces standard pitch accent on common words and phrases, as measured against native recordings.",
+     "common_mistakes": [],
+     "adapters": [
+      "audio_analysis"
+     ],
+     "verifiability": null,
+     "grounded_in": [
+      "s2"
+     ],
+     "core": true
+    },
+    {
+     "id": "speaking.native_speed",
+     "name": "Discuss abstract topics at native speed",
+     "tier": "S",
+     "prerequisites": [
+      "pronunciation.pitch_accent",
+      "grammar.keigo",
+      "reading.short_texts"
+     ],
+     "mastery_criteria": "Discusses abstract topics fluently with natural rhythm and intonation.",
+     "common_mistakes": [],
+     "adapters": [
+      "audio_analysis"
+     ],
+     "verifiability": null,
+     "grounded_in": [
+      "s2"
+     ],
+     "core": true
+    }
+   ],
+   "goal_templates": [
+    {
+     "name": "travel",
+     "target_rank": "D",
+     "emphasis": [
+      "speaking",
+      "listening"
+     ]
+    },
+    {
+     "name": "jlpt_n3",
+     "target_rank": "C",
+     "emphasis": [
+      "reading",
+      "grammar",
+      "kanji"
+     ]
+    }
+   ]
+  },
+  "python": {
+   "pack": "python",
+   "name": "Python",
+   "scope": "General-purpose Python 3 programming, from first scripts to idiomatic, tested code",
+   "version": "0.1.0",
+   "maturity": "draft",
+   "verified_ceiling": "S",
+   "ceiling_message": "SHURA can verify Python all the way to Rank S.",
+   "competency_count": 17,
+   "top_tier": "A",
+   "format_version": 1,
+   "freshness": "slow",
+   "sources": [
+    {
+     "id": "s1",
+     "kind": "documentation",
+     "title": "The Python Tutorial (docs.python.org)",
+     "url": "https://docs.python.org/3/tutorial/"
+    },
+    {
+     "id": "s2",
+     "kind": "syllabus",
+     "title": "Introductory university programming course in Python (CS1) syllabus",
+     "url": null
+    },
+    {
+     "id": "s3",
+     "kind": "certification",
+     "title": "Python Institute PCEP and PCAP exam syllabi",
+     "url": "https://pythoninstitute.org/"
+    },
+    {
+     "id": "s4",
+     "kind": "book",
+     "title": "Think Python, table of contents",
+     "url": null
+    }
+   ],
+   "competencies": [
+    {
+     "id": "basics.values_types",
+     "name": "Values, variables and types",
+     "tier": "F",
+     "prerequisites": [],
+     "mastery_criteria": "Predicts the type and value of expressions using int, float, str and bool, and assigns variables.",
+     "common_mistakes": [
+      "concatenates str and int",
+      "confuses = and =="
+     ],
+     "adapters": [
+      "choice",
+      "exact_answer",
+      "code"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s2",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "basics.conditionals",
+     "name": "Branch with if, elif and else",
+     "tier": "F",
+     "prerequisites": [
+      "basics.values_types"
+     ],
+     "mastery_criteria": "Writes conditionals with comparison and boolean operators and predicts which branch runs.",
+     "common_mistakes": [],
+     "adapters": [
+      "choice",
+      "exact_answer",
+      "code"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s2",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "basics.loops",
+     "name": "Repeat with for and while loops",
+     "tier": "F",
+     "prerequisites": [
+      "basics.conditionals"
+     ],
+     "mastery_criteria": "Writes for loops over ranges and sequences and while loops that terminate, using break and continue.",
+     "common_mistakes": [
+      "off-by-one in range",
+      "infinite while loop"
+     ],
+     "adapters": [
+      "choice",
+      "exact_answer",
+      "code"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s2",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "functions.define",
+     "name": "Define and call functions",
+     "tier": "E",
+     "prerequisites": [
+      "basics.loops"
+     ],
+     "mastery_criteria": "Writes functions with parameters, default values and return values, and distinguishes return from print.",
+     "common_mistakes": [
+      "prints instead of returning",
+      "uses a mutable default argument"
+     ],
+     "adapters": [
+      "choice",
+      "code"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s2",
+      "s3",
+      "s4"
+     ],
+     "core": true
+    },
+    {
+     "id": "collections.lists",
+     "name": "Work with lists and tuples",
+     "tier": "E",
+     "prerequisites": [
+      "basics.loops"
+     ],
+     "mastery_criteria": "Indexes, slices, appends to and iterates over lists, and explains when a tuple fits better.",
+     "common_mistakes": [],
+     "adapters": [
+      "choice",
+      "exact_answer",
+      "code"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s2",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "collections.dicts_sets",
+     "name": "Work with dictionaries and sets",
+     "tier": "E",
+     "prerequisites": [
+      "collections.lists"
+     ],
+     "mastery_criteria": "Counts, groups and looks up data with dicts and sets and picks the right structure for a task.",
+     "common_mistakes": [],
+     "adapters": [
+      "choice",
+      "code"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s2",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "strings.methods",
+     "name": "Manipulate strings",
+     "tier": "E",
+     "prerequisites": [
+      "collections.lists"
+     ],
+     "mastery_criteria": "Uses split, join, strip, replace, f-strings and slicing to transform text.",
+     "common_mistakes": [],
+     "adapters": [
+      "choice",
+      "exact_answer",
+      "code"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "errors.exceptions",
+     "name": "Handle errors with exceptions",
+     "tier": "D",
+     "prerequisites": [
+      "functions.define"
+     ],
+     "mastery_criteria": "Reads tracebacks, catches specific exceptions with try/except/finally and raises meaningful errors.",
+     "common_mistakes": [
+      "bare except that hides bugs"
+     ],
+     "adapters": [
+      "choice",
+      "code"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "debugging.reading_code",
+     "name": "Find and fix bugs in given code",
+     "tier": "D",
+     "prerequisites": [
+      "functions.define",
+      "collections.dicts_sets"
+     ],
+     "mastery_criteria": "Locates and fixes logic errors in unfamiliar functions of about 20 lines using tests and prints.",
+     "common_mistakes": [],
+     "adapters": [
+      "code",
+      "choice"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s2",
+      "s4"
+     ],
+     "core": true
+    },
+    {
+     "id": "files.io",
+     "name": "Read and write files",
+     "tier": "D",
+     "prerequisites": [
+      "strings.methods",
+      "errors.exceptions"
+     ],
+     "mastery_criteria": "Reads and writes text and CSV files with context managers and handles missing files.",
+     "common_mistakes": [],
+     "adapters": [
+      "code",
+      "choice"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "modules.imports",
+     "name": "Organize code in modules and use the standard library",
+     "tier": "D",
+     "prerequisites": [
+      "functions.define"
+     ],
+     "mastery_criteria": "Splits code into modules, imports correctly and uses collections, itertools and pathlib.",
+     "common_mistakes": [],
+     "adapters": [
+      "choice",
+      "code"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "comprehensions",
+     "name": "Write comprehensions and generators",
+     "tier": "C",
+     "prerequisites": [
+      "collections.dicts_sets",
+      "functions.define"
+     ],
+     "mastery_criteria": "Rewrites loops as list, dict and set comprehensions and generators, and judges when a loop reads better.",
+     "common_mistakes": [],
+     "adapters": [
+      "code",
+      "choice"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "oop.classes",
+     "name": "Model data with classes",
+     "tier": "C",
+     "prerequisites": [
+      "functions.define",
+      "collections.dicts_sets"
+     ],
+     "mastery_criteria": "Writes classes with __init__, methods, properties and dataclasses, and explains composition versus inheritance.",
+     "common_mistakes": [],
+     "adapters": [
+      "code",
+      "written"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s3",
+      "s4"
+     ],
+     "core": true
+    },
+    {
+     "id": "testing.pytest",
+     "name": "Test code with pytest",
+     "tier": "C",
+     "prerequisites": [
+      "errors.exceptions",
+      "modules.imports"
+     ],
+     "mastery_criteria": "Writes pytest tests that cover normal, edge and error cases for a given function.",
+     "common_mistakes": [],
+     "adapters": [
+      "code"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "complexity.basics",
+     "name": "Reason about performance",
+     "tier": "B",
+     "prerequisites": [
+      "comprehensions",
+      "collections.dicts_sets"
+     ],
+     "mastery_criteria": "Estimates the time complexity of code and replaces quadratic patterns with suitable data structures.",
+     "common_mistakes": [],
+     "adapters": [
+      "code",
+      "choice",
+      "written"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s2",
+      "s4"
+     ],
+     "core": true
+    },
+    {
+     "id": "advanced.functional",
+     "name": "Use closures, decorators and iterators",
+     "tier": "B",
+     "prerequisites": [
+      "comprehensions",
+      "oop.classes"
+     ],
+     "mastery_criteria": "Writes closures, decorators and custom iterators and explains how they work.",
+     "common_mistakes": [],
+     "adapters": [
+      "code",
+      "written"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "project.cli_tool",
+     "name": "Build a tested command-line tool",
+     "tier": "A",
+     "prerequisites": [
+      "testing.pytest",
+      "files.io",
+      "advanced.functional"
+     ],
+     "mastery_criteria": "Delivers a small packaged CLI with tests and a README, and defends its design choices.",
+     "common_mistakes": [],
+     "adapters": [
+      "project"
+     ],
+     "verifiability": "mixed",
+     "grounded_in": [
+      "s3",
+      "s4"
+     ],
+     "core": true
+    }
+   ],
+   "goal_templates": [
+    {
+     "name": "first_programming_job",
+     "target_rank": "C",
+     "emphasis": [
+      "functions",
+      "collections",
+      "testing",
+      "debugging"
+     ]
+    },
+    {
+     "name": "data_analysis",
+     "target_rank": "D",
+     "emphasis": [
+      "collections",
+      "files",
+      "strings"
+     ]
+    }
+   ]
+  },
+  "sql": {
+   "pack": "sql",
+   "name": "SQL",
+   "scope": "Querying relational databases with standard SQL (PostgreSQL dialect), for data and backend roles",
+   "version": "0.1.0",
+   "maturity": "draft",
+   "verified_ceiling": "B",
+   "ceiling_message": "SHURA can verify SQL up to Rank B. Beyond that it guides your training but cannot certify it.",
+   "competency_count": 16,
+   "top_tier": "B",
+   "format_version": 1,
+   "freshness": "slow",
+   "sources": [
+    {
+     "id": "s1",
+     "kind": "documentation",
+     "title": "PostgreSQL documentation: Tutorial and SQL Language chapters",
+     "url": "https://www.postgresql.org/docs/current/tutorial.html"
+    },
+    {
+     "id": "s2",
+     "kind": "course",
+     "title": "SQLBolt interactive lessons",
+     "url": "https://sqlbolt.com/"
+    },
+    {
+     "id": "s3",
+     "kind": "syllabus",
+     "title": "Introductory university databases course syllabus (relational model, SQL, joins, aggregation)",
+     "url": null
+    },
+    {
+     "id": "s4",
+     "kind": "certification",
+     "title": "Vendor-neutral SQL associate certification outline",
+     "url": null
+    }
+   ],
+   "competencies": [
+    {
+     "id": "select.basic",
+     "name": "Select columns from a table",
+     "tier": "F",
+     "prerequisites": [],
+     "mastery_criteria": "Writes SELECT ... FROM ... returning the requested columns, including aliases with AS.",
+     "common_mistakes": [
+      "forgets FROM",
+      "quotes column names with single quotes"
+     ],
+     "adapters": [
+      "choice",
+      "code"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s2",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "filter.where",
+     "name": "Filter rows with WHERE",
+     "tier": "F",
+     "prerequisites": [
+      "select.basic"
+     ],
+     "mastery_criteria": "Filters rows with comparison operators, AND, OR, IN, BETWEEN and LIKE.",
+     "common_mistakes": [
+      "mixes AND and OR without parentheses",
+      "uses = NULL"
+     ],
+     "adapters": [
+      "choice",
+      "code"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s2",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "sort.limit",
+     "name": "Sort and limit results",
+     "tier": "F",
+     "prerequisites": [
+      "select.basic"
+     ],
+     "mastery_criteria": "Orders results by one or more columns in either direction and limits the row count.",
+     "common_mistakes": [],
+     "adapters": [
+      "choice",
+      "code"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s2"
+     ],
+     "core": true
+    },
+    {
+     "id": "nulls.handling",
+     "name": "Handle NULL correctly",
+     "tier": "E",
+     "prerequisites": [
+      "filter.where"
+     ],
+     "mastery_criteria": "Uses IS NULL, IS NOT NULL and COALESCE and predicts how NULL behaves in comparisons.",
+     "common_mistakes": [
+      "uses = NULL",
+      "expects NULL = NULL to be true"
+     ],
+     "adapters": [
+      "choice",
+      "exact_answer",
+      "code"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "aggregate.basic",
+     "name": "Aggregate with COUNT, SUM, AVG, MIN, MAX",
+     "tier": "E",
+     "prerequisites": [
+      "filter.where"
+     ],
+     "mastery_criteria": "Computes aggregates over a whole table and predicts how COUNT(*) differs from COUNT(column).",
+     "common_mistakes": [],
+     "adapters": [
+      "choice",
+      "exact_answer",
+      "code"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s2",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "aggregate.group_by",
+     "name": "Group rows with GROUP BY and HAVING",
+     "tier": "E",
+     "prerequisites": [
+      "aggregate.basic"
+     ],
+     "mastery_criteria": "Groups rows, aggregates per group, and filters groups with HAVING rather than WHERE.",
+     "common_mistakes": [
+      "selects non-grouped columns",
+      "filters aggregates in WHERE"
+     ],
+     "adapters": [
+      "choice",
+      "code"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s2",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "join.inner",
+     "name": "Join tables with INNER JOIN",
+     "tier": "E",
+     "prerequisites": [
+      "filter.where"
+     ],
+     "mastery_criteria": "Joins two or more tables on keys and qualifies ambiguous column names.",
+     "common_mistakes": [
+      "joins on the wrong key",
+      "produces a cartesian product"
+     ],
+     "adapters": [
+      "choice",
+      "code"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s2",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "join.outer",
+     "name": "Keep unmatched rows with LEFT and FULL JOIN",
+     "tier": "D",
+     "prerequisites": [
+      "join.inner",
+      "nulls.handling"
+     ],
+     "mastery_criteria": "Chooses between inner and outer joins and finds rows with no match using an outer join.",
+     "common_mistakes": [
+      "filters the outer table in WHERE and turns the join back into an inner join"
+     ],
+     "adapters": [
+      "choice",
+      "code"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s2",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "subqueries",
+     "name": "Use subqueries",
+     "tier": "D",
+     "prerequisites": [
+      "aggregate.group_by",
+      "join.inner"
+     ],
+     "mastery_criteria": "Writes scalar, IN and EXISTS subqueries, including correlated ones.",
+     "common_mistakes": [],
+     "adapters": [
+      "code",
+      "choice"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "modify.dml",
+     "name": "Insert, update and delete rows",
+     "tier": "D",
+     "prerequisites": [
+      "filter.where"
+     ],
+     "mastery_criteria": "Writes INSERT, UPDATE and DELETE statements that affect exactly the intended rows.",
+     "common_mistakes": [
+      "UPDATE without WHERE"
+     ],
+     "adapters": [
+      "code",
+      "choice"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s4"
+     ],
+     "core": true
+    },
+    {
+     "id": "schema.ddl",
+     "name": "Design tables with keys and constraints",
+     "tier": "D",
+     "prerequisites": [
+      "modify.dml"
+     ],
+     "mastery_criteria": "Creates tables with suitable types, primary keys, foreign keys, NOT NULL and UNIQUE constraints.",
+     "common_mistakes": [],
+     "adapters": [
+      "code",
+      "written"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s3",
+      "s4"
+     ],
+     "core": true
+    },
+    {
+     "id": "cte",
+     "name": "Structure queries with CTEs",
+     "tier": "C",
+     "prerequisites": [
+      "subqueries"
+     ],
+     "mastery_criteria": "Rewrites nested queries as WITH clauses and writes a recursive CTE over a hierarchy.",
+     "common_mistakes": [],
+     "adapters": [
+      "code"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s4"
+     ],
+     "core": true
+    },
+    {
+     "id": "window.functions",
+     "name": "Analyze with window functions",
+     "tier": "C",
+     "prerequisites": [
+      "aggregate.group_by",
+      "sort.limit"
+     ],
+     "mastery_criteria": "Uses ROW_NUMBER, RANK, LAG, LEAD and running totals with PARTITION BY and ORDER BY.",
+     "common_mistakes": [
+      "confuses window functions with GROUP BY",
+      "misplaces the frame clause"
+     ],
+     "adapters": [
+      "code",
+      "choice"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s4"
+     ],
+     "core": true
+    },
+    {
+     "id": "normalization",
+     "name": "Normalize a schema",
+     "tier": "C",
+     "prerequisites": [
+      "schema.ddl"
+     ],
+     "mastery_criteria": "Explains and applies first to third normal form and justifies deliberate denormalization.",
+     "common_mistakes": [],
+     "adapters": [
+      "written",
+      "choice"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "transactions",
+     "name": "Reason about transactions and isolation",
+     "tier": "B",
+     "prerequisites": [
+      "modify.dml"
+     ],
+     "mastery_criteria": "Uses transactions correctly and predicts anomalies under each isolation level.",
+     "common_mistakes": [],
+     "adapters": [
+      "choice",
+      "written",
+      "code"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s3"
+     ],
+     "core": true
+    },
+    {
+     "id": "performance.indexes",
+     "name": "Speed up queries with indexes and EXPLAIN",
+     "tier": "B",
+     "prerequisites": [
+      "schema.ddl",
+      "join.outer",
+      "subqueries"
+     ],
+     "mastery_criteria": "Reads an EXPLAIN plan, chooses indexes that help a given workload, and explains the cost of each.",
+     "common_mistakes": [],
+     "adapters": [
+      "written",
+      "code"
+     ],
+     "verifiability": "objective",
+     "grounded_in": [
+      "s1",
+      "s4"
+     ],
+     "core": true
+    }
+   ],
+   "goal_templates": [
+    {
+     "name": "data_analyst",
+     "target_rank": "C",
+     "emphasis": [
+      "aggregate",
+      "join",
+      "window",
+      "cte"
+     ]
+    },
+    {
+     "name": "backend_developer",
+     "target_rank": "B",
+     "emphasis": [
+      "schema",
+      "modify",
+      "transactions",
+      "performance"
+     ]
+    }
+   ]
+  }
+ },
+ "aliases": {
+  "japanese": [
+   "japanese",
+   "Japanese",
+   "japanese language",
+   "learn japanese",
+   "nihongo",
+   "jlpt",
+   "japanese kana",
+   "hiragana"
+  ],
+  "python": [
+   "python",
+   "Python",
+   "python programming",
+   "python basics",
+   "python 3",
+   "learn python",
+   "python for data analysis"
+  ],
+  "sql": [
+   "sql",
+   "SQL",
+   "sql basics",
+   "structured query language",
+   "sql for data analysis",
+   "postgres",
+   "postgresql"
+  ]
+ }
+}

@@ -1,0 +1,47 @@
+# Skill-independent rank definitions (standard program format v1).
+# Every pack maps these onto skill-specific, observable criteria through its competencies' tiers.
+# The rank arbiter (P5) reads this file; nothing here is written by a model.
+format_version: 1
+ranks:
+  - rank: F
+    title: Foundations
+    meaning: Knows the basic vocabulary and building blocks of the skill.
+    observable: Recognizes and recalls the core elements; completes guided exercises with scaffolding.
+    evidence_focus: [recognition, recall, production]
+    trial: Recognition items and guided production.
+  - rank: E
+    title: Basic application
+    meaning: Applies single ideas to standard, familiar tasks.
+    observable: Solves standard tasks that use one concept at a time, with light scaffolding.
+    evidence_focus: [recall, production, explanation]
+    trial: Standard tasks with light scaffolding.
+  - rank: D
+    title: Independent application
+    meaning: Works without help on ordinary tasks and finds their own mistakes.
+    observable: Produces correct work from a blank page and locates and fixes errors in given work.
+    evidence_focus: [production, debugging, modification]
+    trial: Independent production and error-finding.
+  - rank: C
+    title: Transfer
+    meaning: Handles unfamiliar variations and explains why one approach beats another.
+    observable: Solves problems framed in unfamiliar ways and justifies trade-offs between approaches.
+    evidence_focus: [transfer, explanation]
+    trial: Unfamiliar variations and explaining trade-offs.
+  - rank: B
+    title: Advanced problems
+    meaning: Combines several advanced concepts on problems nobody has walked them through.
+    observable: Solves hard, unfamiliar problems that combine several concepts, without hints.
+    evidence_focus: [transfer, production]
+    trial: Hard tasks combining several concepts.
+  - rank: A
+    title: Broad advanced mastery
+    meaning: Consistent advanced performance across the whole skill.
+    observable: Performs well on hard tasks drawn from anywhere in the graph and defends a project design.
+    evidence_focus: [transfer, production, explanation]
+    trial: Hard tasks across the whole graph plus a project with a design defense.
+  - rank: S
+    title: Sustained mastery
+    meaning: Advanced mastery that has lasted and can be taught to others.
+    observable: Holds rank A for 90+ days with every retest passed, completes a capstone and a teach-back.
+    evidence_focus: [transfer, explanation]
+    trial: Capstone and teach-back after 90 days at rank A.
