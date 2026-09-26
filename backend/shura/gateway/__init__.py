@@ -10,10 +10,11 @@ from .core import (
     Gateway,
     GatewayError,
     LLMClient,
-    LLMResult,
     ModelRefused,
     Prompt,
+    RawResult,
     data_block,
+    extract_json,
 )
 from .fake import FakeClient
 
@@ -23,8 +24,9 @@ __all__ = [
     "Gateway",
     "GatewayError",
     "LLMClient",
-    "LLMResult",
     "ModelRefused",
     "Prompt",
+    "RawResult",
     "data_block",
+    "extract_json",
 ]
