@@ -2,7 +2,7 @@
 
     python -m shura.forge "SQL" --reference outlines/sql.txt --budget 2.00
 
-Needs Claude API credentials. Output lands in forge_runs/<skill>/ (resumable).
+Needs NVIDIA_API_KEY (free at build.nvidia.com). Output lands in forge_runs/<skill>/ (resumable).
 """
 
 from __future__ import annotations
@@ -23,11 +23,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--budget", type=float, default=2.0, help="hard USD cap for this build")
     args = ap.parse_args(argv)
 
-    from ..gateway.anthropic_client import AnthropicClient
+    from ..gateway.nvidia_client import NvidiaClient
 
     run_dir = args.out / slugify(args.skill)
     reference = args.reference.read_text(encoding="utf-8") if args.reference else ""
-    gateway = Gateway(AnthropicClient(), log_path=run_dir / "calls.jsonl", budget_usd=args.budget)
+    gateway = Gateway(NvidiaClient(), log_path=run_dir / "calls.jsonl", budget_usd=args.budget)
     result = forge_skeleton(args.skill, gateway, run_dir, reference)
     write_report(result, run_dir / "report.json")
 

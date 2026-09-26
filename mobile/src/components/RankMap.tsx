@@ -13,13 +13,25 @@ const MIN_SCALE = 0.35;
 const MAX_SCALE = 2.2;
 const TOOLBAR_SPACE = 64;
 
+import type { CompetencyStatus } from '../engine/types';
+
+const STATUS_BORDER: Record<CompetencyStatus, string> = {
+  locked: 'rgba(143,168,200,0.25)',
+  available: colors.accent,
+  training: colors.accent,
+  proven: colors.success,
+  mastered: colors.gold,
+  decaying: colors.warn,
+};
+
 interface Props {
   competencies: Competency[];
   ceiling: Tier | null;
   onOpen: (id: string) => void;
+  statuses?: Record<string, CompetencyStatus>;
 }
 
-export function RankMap({ competencies, ceiling, onOpen }: Props) {
+export function RankMap({ competencies, ceiling, onOpen, statuses }: Props) {
   const map = useMemo(() => layoutRankMap(competencies), [competencies]);
   const [selected, setSelected] = useState<string | null>(null);
   const path = useMemo(
@@ -144,13 +156,15 @@ export function RankMap({ competencies, ceiling, onOpen }: Props) {
               const onPath = path.has(c.id);
               const dim = selected !== null && !isSel && !onPath;
               const above = tierIndex(c.tier) > ceilingIdx;
+              const st = statuses?.[c.id];
+              const statusBorder = st ? STATUS_BORDER[st] : colors.border;
               return (
                 <Pressable
                   key={c.id}
                   onPress={() => (isSel ? onOpen(c.id) : setSelected(c.id))}
                   onLongPress={() => onOpen(c.id)}
                   accessibilityRole="button"
-                  accessibilityLabel={`${c.name}, ${t.rankLabel(c.tier)}${above ? `. ${t.aboveCeiling}` : ''}`}
+                  accessibilityLabel={`${c.name}, ${t.rankLabel(c.tier)}${st ? `, ${t.status[st]}` : ''}${above ? `. ${t.aboveCeiling}` : ''}`}
                   accessibilityHint="Tap twice to open details"
                   style={[
                     styles.node,
@@ -159,14 +173,16 @@ export function RankMap({ competencies, ceiling, onOpen }: Props) {
                       top: n.y,
                       width: opts.nodeWidth,
                       height: opts.nodeHeight,
-                      borderColor: isSel || onPath ? rankColors[c.tier] : colors.border,
-                      opacity: dim ? 0.4 : 1,
+                      borderColor: isSel || onPath ? rankColors[c.tier] : statusBorder,
+                      backgroundColor: st === 'mastered' ? 'rgba(255,209,102,0.14)' : colors.surfaceHigh,
+                      opacity: dim ? 0.4 : st === 'locked' ? 0.5 : 1,
                       borderStyle: above ? 'dashed' : 'solid',
                     },
                   ]}
                 >
                   <View style={[styles.tierDot, { backgroundColor: rankColors[c.tier] }]} />
                   <Text style={styles.nodeText} numberOfLines={3}>
+                    {st === 'locked' ? '🔒 ' : st === 'mastered' ? '★ ' : ''}
                     {c.name}
                   </Text>
                 </Pressable>

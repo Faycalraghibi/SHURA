@@ -1,181 +1,209 @@
-import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  KeyboardAvoidingView,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Redirect, router } from 'expo-router';
+import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { RankBadge } from '../components/RankBadge';
+import { Bar, SysButton } from '../components/system/Controls';
+import { Loading, Screen } from '../components/system/Screen';
+import { Label, SysText, Window } from '../components/system/Window';
+import { masteryPercent, status } from '../engine/mastery';
+import { planNext } from '../engine/planner';
+import { levelFromXp, rankInfo, STAT_INFO, stats, type Stats } from '../engine/progression';
 import { t } from '../i18n/en';
-import { listPacks, requestSkill, type DataSource } from '../lib/api';
-import type { PackSummary } from '../lib/types';
-import { colors, rankColors, space, TOUCH } from '../theme';
+import { playerTitle } from '../lib/notices';
+import { tierIndex } from '../lib/types';
+import { usePlayer } from '../state/PlayerProvider';
+import { colors, mono, rankColors, space } from '../theme';
 
-export default function Home() {
-  const [packs, setPacks] = useState<PackSummary[]>([]);
-  const [source, setSource] = useState<DataSource | null>(null);
-  const [query, setQuery] = useState('');
-  const [busy, setBusy] = useState(false);
-  const [queued, setQueued] = useState<string | null>(null);
+/** The status window (VISION §35): who you are, what you can do, and the quest in front of you. */
+export default function Status() {
+  const { ready, player, activeQuest, reset, setPlayer } = usePlayer();
+  if (!ready) return <Loading text={t.system} />;
+  if (!player) return <Redirect href="/awaken" />;
+  const skill = player.activeSkill ? player.skills[player.activeSkill] : null;
+  if (!skill) return <Redirect href={{ pathname: '/awaken', params: { mode: 'skill' } }} />;
+  if (!skill.assessed) return <Redirect href="/assessment" />;
 
-  useEffect(() => {
-    listPacks().then(({ data, source: src }) => {
-      setPacks(data);
-      setSource(src);
-    });
-  }, []);
+  const now = Date.now();
+  const lvl = levelFromXp(player.xp);
+  const info = rankInfo(skill);
+  const st = stats(Object.values(player.skills));
+  const penalty = player.daily.penaltyPending;
+  const plan = planNext(skill, now, { forceRetest: penalty });
+  const planComp = plan ? skill.pack.competencies.find((c) => c.id === plan.competencyId) : null;
 
-  const submit = async () => {
-    const text = query.trim();
-    if (!text || busy) return;
-    setBusy(true);
-    setQueued(null);
-    const { data } = await requestSkill(text);
-    setBusy(false);
-    if (data.status === 'matched') {
-      router.push({ pathname: '/pack/[id]', params: { id: data.pack } });
-    } else {
-      setQueued(text);
-    }
-  };
+  // Skill bars: the competencies in play right now (training, proven, retest due), weakest first.
+  const bars = skill.pack.competencies
+    .map((c) => ({ c, st: status(skill.pack, skill.competencies, c, now), pct: masteryPercent(skill.competencies[c.id], c.tier) }))
+    .filter((x) => x.st !== 'locked')
+    .sort((a, b) => tierIndex(a.c.tier) - tierIndex(b.c.tier) || a.pct - b.pct)
+    .slice(0, 6);
+
+  const otherSkills = Object.values(player.skills).filter((s) => s.pack.pack !== skill.pack.pack);
 
   return (
-    <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}>
-      <KeyboardAvoidingView style={styles.flex} behavior="height">
-        <FlatList
-          data={packs}
-          keyExtractor={(p) => p.pack}
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={styles.list}
-          ListHeaderComponent={
-            <View>
-              <Text style={styles.logo}>{t.appName}</Text>
-              <Text style={styles.tagline}>{t.tagline}</Text>
+    <Screen>
+      <Window title={t.statusTitle}>
+        <View style={styles.row}>
+          <View style={styles.levelBox}>
+            <Text style={styles.levelNum}>{lvl.level}</Text>
+            <Label>{t.level}</Label>
+          </View>
+          <View style={styles.flex}>
+            <Label>{t.name}</Label>
+            <SysText style={styles.name}>{player.name}</SysText>
+            <Label style={styles.gapTop}>{t.titleLabel}</Label>
+            <SysText dim>{playerTitle(player)}</SysText>
+          </View>
+        </View>
+        <View style={[styles.row, styles.gapTop]}>
+          <Text style={styles.xpLabel}>{t.xp}</Text>
+          <Bar value={lvl.into / lvl.needed} />
+          <Text style={styles.xpNum}>
+            {lvl.into}/{lvl.needed}
+          </Text>
+        </View>
 
-              <View style={styles.searchRow}>
-                <TextInput
-                  value={query}
-                  onChangeText={setQuery}
-                  onSubmitEditing={submit}
-                  placeholder={t.searchPlaceholder}
-                  placeholderTextColor={colors.textDim}
-                  accessibilityLabel={t.searchA11y}
-                  returnKeyType="go"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  style={styles.input}
-                />
-              </View>
-              <Pressable
-                onPress={submit}
-                disabled={busy || !query.trim()}
-                style={({ pressed }) => [styles.button, (pressed || busy || !query.trim()) && styles.buttonDim]}
-                accessibilityRole="button"
-              >
-                {busy ? <ActivityIndicator color={colors.bg} /> : <Text style={styles.buttonText}>{t.searchButton}</Text>}
-              </Pressable>
-
-              {queued && (
-                <View style={styles.queued} accessibilityLiveRegion="polite">
-                  <Text style={styles.queuedTitle}>{t.queuedTitle}</Text>
-                  <Text style={styles.queuedBody}>{t.queuedBody(queued)}</Text>
-                </View>
-              )}
-
-              <Text style={styles.section}>{t.packsTitle}</Text>
-              {source === 'bundled' && <Text style={styles.offline}>{t.offline}</Text>}
+        <View style={styles.statGrid}>
+          {(Object.keys(st) as (keyof Stats)[]).map((k) => (
+            <View key={k} style={styles.stat} accessibilityLabel={`${STAT_INFO[k]} ${st[k]}`}>
+              <Text style={styles.statKey}>{k}</Text>
+              <Text style={styles.statVal}>{st[k]}</Text>
             </View>
-          }
-          renderItem={({ item }) => (
-            <Pressable
-              onPress={() => router.push({ pathname: '/pack/[id]', params: { id: item.pack } })}
-              style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
-              accessibilityRole="button"
-              accessibilityLabel={`${item.name}. ${t.competencies(item.competency_count)}. ${item.ceiling_message}`}
-            >
-              <View style={styles.cardText}>
-                <Text style={styles.cardTitle}>{item.name}</Text>
-                <Text style={styles.cardScope} numberOfLines={2}>
-                  {item.scope}
-                </Text>
-                <Text style={styles.cardMeta}>
-                  {t.competencies(item.competency_count)} · {t.maturity[item.maturity]}
-                </Text>
-              </View>
-              <View style={styles.cardRank}>
-                <Text style={[styles.ceilingSmall, { color: rankColors.F }]}>F →</Text>
-                {item.verified_ceiling ? <RankBadge tier={item.verified_ceiling} /> : <Text style={styles.ceilingSmall}>—</Text>}
-              </View>
-            </Pressable>
-          )}
-        />
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+          ))}
+        </View>
+      </Window>
+
+      <Window title={`${t.rank} · ${skill.pack.name.toUpperCase()}`}>
+        <View style={styles.row}>
+          {info.rank ? <RankBadge tier={info.rank} size={56} /> : <Text style={styles.unranked}>{t.unranked}</Text>}
+          <View style={[styles.flex, styles.gapLeft]}>
+            {info.next ? (
+              <>
+                <SysText>{t.nextRank(info.next, info.nextMastered, info.nextTotal)}</SysText>
+                <View style={styles.gapTopSmall}>
+                  <Bar value={info.nextTotal ? info.nextMastered / info.nextTotal : 0} color={rankColors[info.next]} />
+                </View>
+                {info.capped ? <SysText dim style={styles.small}>{t.rankCapped(info.next)}</SysText> : null}
+              </>
+            ) : null}
+          </View>
+        </View>
+        {bars.map(({ c, st: s, pct }) => (
+          <View key={c.id} style={styles.skillRow} accessibilityLabel={`${c.name} ${pct}% ${t.status[s]}`}>
+            <Text style={[styles.skillTier, { color: rankColors[c.tier] }]}>{c.tier}</Text>
+            <Text style={styles.skillName} numberOfLines={1}>
+              {c.name}
+            </Text>
+            <View style={styles.skillBar}>
+              <Bar value={pct / 100} height={6} color={s === 'decaying' ? colors.warn : colors.accent} />
+            </View>
+            <Text style={styles.skillPct}>{pct}%</Text>
+          </View>
+        ))}
+        <SysButton label={t.skillTree} tone="quiet" onPress={() => router.push('/tree')} />
+      </Window>
+
+      {penalty ? (
+        <Window title={t.penaltyTitle} tone="danger">
+          <SysText>{t.penaltyBody}</SysText>
+        </Window>
+      ) : null}
+
+      <Window title={t.dailyTitle} tone={player.daily.done >= player.daily.target ? 'gold' : 'system'}>
+        <SysText>{t.dailyName}</SysText>
+        <SysText dim style={styles.gapTopSmall}>
+          {player.daily.done >= player.daily.target ? t.dailyDone : t.dailyProgress(player.daily.done, player.daily.target)}
+        </SysText>
+        <SysText dim>{t.streak(player.daily.streak)}</SysText>
+      </Window>
+
+      <Window title={t.questTitle}>
+        {activeQuest ? (
+          <>
+            <SysText style={styles.questName}>“{activeQuest.quest.title}”</SysText>
+            <SysText dim>{activeQuest.quest.objective}</SysText>
+            <SysButton label={t.resumeQuest} onPress={() => router.push('/quest')} />
+          </>
+        ) : plan && planComp ? (
+          <>
+            <View style={styles.row}>
+              <RankBadge tier={planComp.tier} size={24} />
+              <SysText style={[styles.flex, styles.gapLeft]}>{planComp.name}</SysText>
+            </View>
+            <SysText dim style={styles.gapTopSmall}>
+              {t.evidence[plan.evidenceType]}
+              {plan.retest ? ` · ${t.retestTag}` : ''}
+              {plan.reason === 'step_back' ? ` · ${t.stepBackTag}` : ''}
+            </SysText>
+            <SysButton label={t.acceptQuest} onPress={() => router.push('/quest')} />
+          </>
+        ) : (
+          <SysText dim>{t.noQuest}</SysText>
+        )}
+      </Window>
+
+      <Window title={t.skills}>
+        {otherSkills.map((s) => (
+          <Pressable
+            key={s.pack.pack}
+            style={styles.otherSkill}
+            accessibilityRole="button"
+            onPress={() => setPlayer({ ...player, activeSkill: s.pack.pack })}
+          >
+            <SysText>{s.pack.name}</SysText>
+            <Text style={styles.switch}>{t.switchSkill}</Text>
+          </Pressable>
+        ))}
+        <SysButton label={t.newSkill} tone="quiet" onPress={() => router.push({ pathname: '/awaken', params: { mode: 'skill' } })} />
+      </Window>
+
+      <Window title={t.log}>
+        {player.log.slice(0, 6).map((l, i) => (
+          <SysText key={`${l.at}-${i}`} dim style={styles.small}>
+            › {l.text}
+          </SysText>
+        ))}
+      </Window>
+
+      <Pressable
+        onPress={() =>
+          Alert.alert(t.resetGame, t.resetConfirm, [
+            { text: t.back, style: 'cancel' },
+            { text: t.resetGame, style: 'destructive', onPress: () => reset() },
+          ])
+        }
+        accessibilityRole="button"
+      >
+        <Text style={styles.reset}>{t.resetGame}</Text>
+      </Pressable>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.bg },
   flex: { flex: 1 },
-  list: { padding: space(4), paddingBottom: space(10) },
-  logo: { color: colors.text, fontSize: 40, fontWeight: '900', letterSpacing: 6, marginTop: space(6) },
-  tagline: { color: colors.textDim, fontSize: 16, marginTop: space(1), marginBottom: space(6) },
-  searchRow: { flexDirection: 'row' },
-  input: {
-    flex: 1,
-    minHeight: TOUCH + 4,
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: colors.border,
-    color: colors.text,
-    fontSize: 17,
-    paddingHorizontal: space(4),
-  },
-  button: {
-    minHeight: TOUCH,
-    marginTop: space(3),
-    borderRadius: 12,
-    backgroundColor: colors.accent,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonDim: { opacity: 0.6 },
-  buttonText: { color: colors.bg, fontWeight: '800', fontSize: 16 },
-  queued: {
-    marginTop: space(4),
-    padding: space(4),
-    borderRadius: 12,
-    backgroundColor: colors.surface,
-    borderLeftWidth: 3,
-    borderLeftColor: colors.warn,
-  },
-  queuedTitle: { color: colors.text, fontWeight: '700', marginBottom: space(1) },
-  queuedBody: { color: colors.textDim, lineHeight: 20 },
-  section: { color: colors.text, fontSize: 18, fontWeight: '800', marginTop: space(8), marginBottom: space(2) },
-  offline: { color: colors.textDim, fontSize: 12, marginBottom: space(2) },
-  card: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: 14,
-    padding: space(4),
-    marginBottom: space(3),
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  cardPressed: { backgroundColor: colors.surfaceHigh },
-  cardText: { flex: 1, marginRight: space(3) },
-  cardTitle: { color: colors.text, fontSize: 18, fontWeight: '800' },
-  cardScope: { color: colors.textDim, fontSize: 13, marginTop: space(1), lineHeight: 18 },
-  cardMeta: { color: colors.textDim, fontSize: 12, marginTop: space(2) },
-  cardRank: { flexDirection: 'row', alignItems: 'center', gap: space(1.5) },
-  ceilingSmall: { color: colors.textDim, fontWeight: '700' },
+  row: { flexDirection: 'row', alignItems: 'center' },
+  gapTop: { marginTop: space(3) },
+  gapTopSmall: { marginTop: space(1.5) },
+  gapLeft: { marginLeft: space(3) },
+  levelBox: { alignItems: 'center', width: 84, marginRight: space(3) },
+  levelNum: { color: colors.accent, fontFamily: mono, fontSize: 44, fontWeight: '900', textShadowColor: colors.glow, textShadowRadius: 12 },
+  name: { fontSize: 18, fontWeight: '700' },
+  xpLabel: { color: colors.textDim, fontFamily: mono, marginRight: space(2) },
+  xpNum: { color: colors.textDim, fontFamily: mono, marginLeft: space(2), fontSize: 12 },
+  statGrid: { flexDirection: 'row', flexWrap: 'wrap', marginTop: space(3), borderTopWidth: 1, borderTopColor: colors.borderDim, paddingTop: space(2) },
+  stat: { width: '33.33%', flexDirection: 'row', justifyContent: 'space-between', paddingVertical: space(1.5), paddingHorizontal: space(2) },
+  statKey: { color: colors.textDim, fontFamily: mono, fontWeight: '700' },
+  statVal: { color: colors.text, fontFamily: mono, fontWeight: '700' },
+  unranked: { color: colors.textDim, fontFamily: mono, fontWeight: '800', letterSpacing: 2 },
+  small: { fontSize: 12, lineHeight: 18, marginTop: space(1) },
+  skillRow: { flexDirection: 'row', alignItems: 'center', marginTop: space(3) },
+  skillTier: { fontFamily: mono, fontWeight: '800', width: 18 },
+  skillName: { color: colors.text, flex: 1, fontSize: 13, marginRight: space(2) },
+  skillBar: { width: 90, flexDirection: 'row' },
+  skillPct: { color: colors.textDim, fontFamily: mono, fontSize: 12, width: 40, textAlign: 'right' },
+  questName: { fontSize: 18, fontWeight: '700', marginBottom: space(1) },
+  otherSkill: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', minHeight: 44 },
+  switch: { color: colors.accent, fontFamily: mono },
+  reset: { color: colors.textDim, textAlign: 'center', textDecorationLine: 'underline', marginTop: space(4), fontSize: 12 },
 });

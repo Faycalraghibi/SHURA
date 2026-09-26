@@ -19,9 +19,9 @@ bundle = {
     "packs": {s["pack"]: client.get(f"/packs/{s['pack']}").json() for s in summaries},
     "aliases": {},
 }
-from shura.api.app import get_registry  # noqa: E402
+from shura.registry import PackRegistry  # noqa: E402
 
-for p in get_registry().all():
+for p in PackRegistry.from_dir().all():
     bundle["aliases"][p.pack] = [p.pack, p.name, *p.aliases]
 
 out = Path(__file__).resolve().parents[2] / "mobile" / "src" / "data" / "bundle.json"

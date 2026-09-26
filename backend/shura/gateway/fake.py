@@ -1,31 +1,37 @@
 from __future__ import annotations
 
+import json
 from collections.abc import Callable
-from typing import Any, TypeVar
+from typing import Any
 
-from pydantic import BaseModel
+from .core import RawResult
 
-from .core import LLMResult
-
-T = TypeVar("T", bound=BaseModel)
-
-Responder = Callable[[str, str], dict[str, Any]]
+Responder = Callable[[str, str], dict[str, Any] | str]
 
 
 class FakeClient:
     """Deterministic stand-in for a model, keyed by output schema name.
 
-    Used by tests and by offline Forge dry runs. Each responder gets (system, user) and returns a
-    dict that must validate against the schema.
+    Used by tests and offline dry runs. Each responder gets (system, user) and returns either a dict
+    (sent as JSON) or a raw string (to test parsing and repair).
     """
 
     def __init__(self, responders: dict[str, Responder | dict[str, Any]]):
         self.responders = responders
         self.calls: list[tuple[str, str, str]] = []
 
-    def complete(self, *, model: str, system: str, user: str, schema: type[T], max_tokens: int) -> LLMResult:
-        self.calls.append((schema.__name__, system, user))
-        responder = self.responders[schema.__name__]
+    def complete(
+        self,
+        *,
+        model: str,
+        system: str,
+        user: str,
+        max_tokens: int,
+        json_schema: dict[str, Any],
+        schema_name: str,
+    ) -> RawResult:
+        self.calls.append((schema_name, system, user))
+        responder = self.responders[schema_name]
         data = responder(system, user) if callable(responder) else responder
-        output = schema.model_validate(data)
-        return LLMResult(output=output, model=model, input_tokens=len(system + user) // 4, output_tokens=len(str(data)) // 4)
+        text = data if isinstance(data, str) else json.dumps(data)
+        return RawResult(text=text, model=model, input_tokens=len(system + user) // 4, output_tokens=len(text) // 4)

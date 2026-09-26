@@ -1,89 +1,117 @@
-# SHURA: Implementation Plan (Android first)
+# SHURA: Implementation Plan v2 (the System)
 
-This document turns the SHURA build plan into concrete engineering work.
-For now the mobile work targets **Android only**. The app is React Native with Expo, so
-iOS stays possible, but no iOS-specific work (TestFlight, Sign in with Apple, APNs,
-App Store listing) happens until Android reaches closed beta.
+Source of truth: `docs/VISION.md`. SHURA is **the System from Solo Leveling, for studying**: you
+awaken, the System reads your level, hands you quests, judges what you submit, and you rank up only
+by proving you can do it.
 
-## Why Android first changes a few things
+> You do not rank up because you studied something. You rank up because you demonstrated that you
+> can do it. (VISION §1)
 
-| Topic | Android-first decision |
+## What changed from v1
+
+v1 built a skill catalog: browse packs, look at a rank map. That is the knowledge layer only. v2
+puts the **player** at the centre: status window, quests, submissions, evaluation, XP, level ups and
+rank ups. The v1 knowledge layer (pack format, validator, ceiling rule) stays underneath.
+
+## Decisions
+
+| Topic | Decision |
 | --- | --- |
-| Builds | EAS profiles `development` (dev client APK), `preview` (internal APK), `production` (AAB for Play) |
-| Beta channel | Google Play internal testing instead of TestFlight |
-| Sign-in (P3) | Google + email first; Sign in with Apple is added with the iOS build |
-| Push (P5) | FCM only; APNs later |
-| Billing (P6) | Google Play Billing through RevenueCat; App Store products later |
-| UX | Hardware back button and predictive back handled by the router; edge-to-edge layout with safe-area insets; keyboard `resize` behaviour for the code editor; tested on a low-end device profile (for example 3 GB RAM, 720p) because many students in the first market use mid-range Android phones |
-| Store rules | Play data safety form and in-app account deletion (P5) |
+| Platform | Android first (Expo, React Native) |
+| AI | Free NVIDIA API (build.nvidia.com, OpenAI-compatible) only, for now |
+| API key | On the backend (`NVIDIA_API_KEY`), never in the app |
+| Progress | On the phone (AsyncStorage). No account. Export/import later |
+| Skills | Open: any skill the player types |
 
-## Repository layout
+## The feel: Solo Leveling's System
+
+- Blue translucent **System windows** with `[ SYSTEM ]` headers, glowing borders, monospaced stats.
+- **Notifications** slide in: "You have acquired a new quest.", "Quest complete.", "LEVEL UP!",
+  "Rank up: E → D", "Penalty quest issued."
+- **Status window** (home): name, level, XP bar, title, hunter rank for the active skill, stats and
+  competency bars (VISION §35).
+- **Daily Quest: Preparation to become strong**: every day, 3 quests plus any due retests. Missing it
+  issues a **Penalty Quest** (a retest set); nothing is ever taken away (VISION §24).
+- **Level** comes from XP and is progression only. **Rank** comes from evidence only (VISION §26, §27).
+
+### Stats (study version of STR, AGI, …)
+
+Derived from evidence, never assigned by the AI (VISION §16):
+
+| Stat | Meaning | Grows with |
+| --- | --- | --- |
+| INT | Understanding | recall and recognition successes |
+| STR | Production | building from scratch |
+| AGI | Debugging | finding and fixing errors |
+| PER | Transfer | unfamiliar problems |
+| SEN | Explanation | explaining why it works |
+| VIT | Retention | passed retests |
+
+## Architecture
 
 ```text
-docs/             build plan and this implementation plan
-packs/            standard program format: rank definitions + hand-written packs (YAML)
-backend/          Python 3.11+, FastAPI
-  shura/format    pydantic models of the standard program format
-  shura/validate  deterministic pack checks (cycles, orphans, tier order, grounding, ceiling rule)
-  shura/registry  pack registry and skill-request matching
-  shura/forge     Skill Forge prototype (stages 2 to 4 + critic) behind the LLM gateway
-  shura/gateway   the only path to a model: versioned prompts, schema-checked outputs, cost log
-  shura/api       HTTP API used by the app
-mobile/           Expo SDK 57 app, TypeScript, Expo Router
+PHONE (Expo app)                                   BACKEND (FastAPI, holds NVIDIA key)
+  Player state (AsyncStorage)                        /system/awaken    skill -> skill tree (pack)
+  Deterministic engines (TypeScript, tested):        /system/assess    pack -> diagnostic questions
+    learner model  (Elo ability + evidence mix)      /system/quest     competency + weakness -> quest
+    planner        (weakest link, retests, step back)/system/evaluate  quest + submission -> verdict
+    rank arbiter   (ranks from evidence only)        /system/hint      quest + level -> hint
+    XP / level     (independence-weighted)           knowledge layer: packs, validator, ceiling rule
+  System UI: status, quest, skill tree, notifications  LLM gateway -> NVIDIA (JSON validated by schema)
 ```
 
-## P0 work breakdown (this branch)
+Rules carried from the vision:
 
-Mapped to the "first two weeks" table of the build plan.
+- The AI generates skill trees, quests, hints and rubric verdicts. **It never sets a rank** (§27, §28).
+- Skill trees are grounded and validated by code before use (§5, §29). Built trees are cached on the
+  server so the same skill is built once.
+- Generated quests are validated before the player sees them (§14): competency exists, choice
+  answers in range and options distinct, required fields present.
+- Objective checks are done by code whenever possible (§20): multiple-choice and exact answers are
+  graded on the phone; only open answers (explanations, code, proofs) go to the AI evaluator.
+- Hints escalate over 6 levels; each level lowers the evidence weight (§15, §21).
+- Failure is diagnosed (§36): missing prerequisite → the planner steps back (§22).
 
-| # | Task | Build plan days | Status |
-| --- | --- | --- | --- |
-| 1 | Standard program format v1 as pydantic models + exported JSON Schema | 1 to 2 | done |
-| 2 | Skill-independent rank definitions F to S in observable terms (`packs/ranks.yaml`) | 1 to 2 | done |
-| 3 | Three hand-written packs: SQL, Python, Japanese (non-tech control) | 3 | done; no schema changes were needed |
-| 4 | Validator: schema, unique ids, prerequisite existence, no cycles, no orphans, tier order, grounding, adapters present | 8 to 9 | done |
-| 5 | Adapter registry + trust levels + the ceiling rule, computed by code, never by a model | 10 | done (Japanese B, SQL B, Python S) |
-| 6 | Pack registry with name/alias matching | 13 to 14 | done, file-backed; Postgres + pgvector in P1 |
-| 7 | FastAPI: list packs, get pack, rank definitions, skill request (match or queue a forge build) | 13 to 14 | done |
-| 8 | LLM gateway + Forge prototype stages 2 to 4 and critic, JSON-schema outputs, cost logging; runs offline against a fake model in tests | 5 to 9 | done; not yet run against the real API |
-| 9 | Android app shell: skill search, pack list, pannable/zoomable rank map, competency detail, verified-ceiling banner | 11 to 12 | done; Android bundle builds; not yet run on a device |
-| 10 | Benchmark list of 25 skills + 8 reference outlines | 4 | list done (`docs/FORGE_BENCHMARK.md`); outlines to gather by hand |
-| 11 | Phone code editor spike (CodeMirror 6 in a WebView, native symbol row) | week 3 | next |
-| 12 | Forge run on the 8 reference skills with coverage scoring | 5 to 7 | next (needs an API key and the outlines) |
+## Learner model (on the phone)
 
-### Engineering rules carried from the build plan
+- **Ability** per competency, Elo style: tier difficulty F=800 … S=2000 (+200 per tier).
+  `p = 1 / (1 + 10^((difficulty - ability)/400))`, update `ability += K · w · (score - p)`.
+- **Weight** `w` = evidence type weight (recognition 0.3 … transfer 1.2) × independence
+  (no hint 1.0 … full solution 0).
+- **Proven**: predicted success at its tier ≥ 0.8 and ≥ 2 independent successes of 2+ evidence types.
+- **Mastered**: Proven + a passed retest at least 2 days after the first success (§17, §24).
+- **Rank** for a skill: highest tier where every core competency at or below it is Mastered, capped
+  by the verified ceiling. Proven-only tiers show as "rank-up pending retest".
+- **Retests**: stability doubles on each pass (1, 2, 5, 12, 30 days rhythm), halves on failure.
 
-- Anything that changes mastery or rank is plain code. The ceiling rule, validators and (later) the
-  rank arbiter import nothing from `gateway`.
-- Every model call goes through `shura.gateway`, returns schema-validated JSON and is costed.
-- Untrusted text (web pages, job postings, submissions) is passed to models only inside marked data
-  blocks.
-- User-facing strings in the app live in `mobile/src/i18n/en.ts` from the first screen.
+## Build order (this branch)
 
-## Next phases, Android specifics only
+| # | Work | Status |
+| --- | --- | --- |
+| 1 | Save the vision; this plan | done |
+| 2 | Gateway: NVIDIA client (OpenAI-compatible), JSON extraction, schema validation, 1 repair retry, rate-limit backoff | done (tested with a fake model; not yet run against NVIDIA) |
+| 3 | Forge on NVIDIA + server cache of built trees; `/system/awaken` | done |
+| 4 | `/system/assess`, `/system/quest`, `/system/evaluate`, `/system/hint` with validation | done |
+| 5 | App engines: learner model, planner, rank, XP/level, stats (unit tests) | done |
+| 6 | App state store on the phone | done (AsyncStorage) |
+| 7 | System UI kit: window, notification, bars | done |
+| 8 | Screens: Awakening, Assessment, Status, Quest, Result, Skill tree | done; full loop clicked through in a browser against the real backend with a scripted model |
+| 9 | Daily quest + penalty quest + retests | done |
+| 10 | CI green, then a run on a real phone with a real NVIDIA key | needs you |
 
-- **P1 Forge v1:** durable workflow (Postgres-backed job table), intake and safety, pgvector matching.
-  App: "forging" screen that polls build status and shows the rank map taking shape; FCM push when
-  ready.
-- **P2 demand test:** public preview (web) + waitlist; job mapper v1.
-- **P3 core loop:** task smith, learner model, planner, evidence log, daily training on Android;
-  Google sign-in; admin console v1.
-- **P4 to P6:** as in the build plan, with Play internal testing for the beta and Play Billing for Pro.
+## Later
 
-## How to run
+Code execution with hidden tests (sandbox), GitHub project quests (§19), web search for real free
+resources (§7; v2 links to YouTube and documentation *searches*, which cannot be hallucinated),
+rank-up trials, export/import of progress, iOS.
+
+## Running
 
 ```bash
-# backend
-cd backend && pip install -e ".[dev]" && pytest && uvicorn shura.api.app:app --reload
+cd backend && pip install -e ".[dev]"
+export NVIDIA_API_KEY=nvapi-...           # free key from build.nvidia.com
+uvicorn shura.api.app:app --host 0.0.0.0 --port 8000
 
-# mobile (Android device or emulator on the same network)
-cd mobile && npm install && npm test && npm run typecheck
-npx expo run:android          # development build (needs the Android SDK), or:
-npx eas-cli@latest build --profile development --platform android
-# set EXPO_PUBLIC_API_URL=http://<your-lan-ip>:8000 so the phone reaches the backend;
-# without it the app uses the packs bundled in the app.
-# after editing any pack: npm run bundle:packs  (regenerates mobile/src/data/bundle.json)
+cd mobile && npm install
+EXPO_PUBLIC_API_URL=http://<your-computer-lan-ip>:8000 npx expo start   # open in Expo Go
 ```
-
-Expo Go cannot be used as the long-term runtime: reanimated, gesture handler and (next) the
-WebView code editor need a development build, which is why `eas.json` has a `development` profile.
